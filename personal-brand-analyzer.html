@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Brand Analyzer | IncomeAIHub</title>
+<meta name="description" content="AI-powered Personal Brand Analyzer — score your personal brand, get a positioning statement, content pillars and a 30-day action plan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+  :root{
+    --bg: #0b0d12;
+    --bg-soft: #12151d;
+    --panel: #161a24;
+    --panel-2: #1c212e;
+    --border: #2a3040;
+    --border-soft: #232838;
+    --text: #eef1f7;
+    --text-dim: #9aa2b5;
+    --text-faint: #656d80;
+    --gold: #f0c568;
+    --gold-dim: #a8863f;
+    --emerald: #34d399;
+    --emerald-dim: #1f8f68;
+    --violet: #a78bfa;
+    --violet-dim: #6d4fc4;
+    --red: #f87171;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(240,197,104,0.08), transparent 60%),
+      radial-gradient(ellipse 900px 600px at 100% 10%, rgba(167,139,250,0.07), transparent 55%),
+      var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{ max-width: 1180px; margin: 0 auto; padding: 0 22px; }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position: sticky; top:0; z-index: 60;
+    background: rgba(11,13,18,0.86);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .topbar-inner{
+    display:flex; align-items:center; justify-content: space-between;
+    padding: 14px 22px; max-width: 1180px; margin: 0 auto;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-mark{
+    width:34px; height:34px; border-radius:9px;
+    background: linear-gradient(135deg, var(--gold), var(--emerald));
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--font-display); font-weight:800; color:#0b0d12; font-size:15px;
+  }
+  .brand-text{ font-family: var(--font-display); font-weight:700; font-size:16px; letter-spacing:0.2px; }
+  .brand-text span{ color: var(--text-faint); font-weight:500; font-size:11px; display:block; font-family: var(--font-mono); letter-spacing: 0.5px; }
+
+  .topbar-actions{ display:flex; gap:10px; align-items:center; }
+  .icon-btn{
+    background: var(--panel); border:1px solid var(--border); color: var(--text-dim);
+    font-family: var(--font-body); font-size: 13px; font-weight:600;
+    padding: 9px 14px; border-radius: 999px; cursor:pointer;
+    display:flex; align-items:center; gap:6px; transition: all .15s ease;
+  }
+  .icon-btn:hover{ border-color: var(--gold-dim); color: var(--gold); }
+
+  /* ---------- Hero ---------- */
+  .hero{ padding: 56px 0 34px; }
+  .eyebrow{
+    font-family: var(--font-mono); font-size:12px; letter-spacing:2px; text-transform:uppercase;
+    color: var(--emerald); display:flex; align-items:center; gap:10px; margin-bottom:16px;
+  }
+  .eyebrow::before{ content:''; width:26px; height:1px; background: var(--emerald); }
+  h1{
+    font-family: var(--font-display); font-weight:800; font-size: clamp(30px, 5vw, 48px);
+    line-height:1.08; letter-spacing:-0.5px; max-width: 780px;
+  }
+  h1 em{ font-style: normal; background: linear-gradient(90deg, var(--gold), var(--emerald));
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .hero p{ color: var(--text-dim); font-size:16px; max-width:560px; margin-top:16px; }
+  .hero-stats{ display:flex; gap:26px; margin-top:26px; flex-wrap:wrap; }
+  .hstat b{ font-family: var(--font-display); font-size:22px; color:var(--gold); display:block; }
+  .hstat span{ font-size:12px; color:var(--text-faint); font-family: var(--font-mono); }
+
+  /* ---------- ad slot ---------- */
+  .ad-slot{
+    border:1px dashed var(--border); border-radius: var(--radius-sm);
+    color: var(--text-faint); font-family: var(--font-mono); font-size:11px;
+    text-align:center; padding: 10px; margin: 22px 0; letter-spacing:1px;
+  }
+
+  /* ---------- Layout ---------- */
+  .layout{ display:grid; grid-template-columns: 1fr; gap: 22px; padding-bottom: 60px; }
+
+  .card{
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid var(--border); border-radius: var(--radius);
+    padding: 26px;
+  }
+  .card-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; gap:12px; flex-wrap:wrap; }
+  .card-title{ font-family: var(--font-display); font-weight:700; font-size:19px; }
+  .card-sub{ color: var(--text-faint); font-size:12.5px; font-family: var(--font-mono); margin-top:3px; }
+
+  /* ---------- Form ---------- */
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block; font-size:12.5px; font-weight:600; color: var(--text-dim);
+    margin-bottom:7px; letter-spacing:0.2px;
+  }
+  .field label .req{ color: var(--gold); }
+  .field .hint{ font-size:11px; color: var(--text-faint); margin-top:5px; }
+  input[type=text], input[type=number], input[type=password], textarea, select{
+    width:100%; background: var(--bg-soft); border:1px solid var(--border); color: var(--text);
+    padding: 11px 13px; border-radius: var(--radius-sm); font-family: var(--font-body); font-size:14px;
+    outline:none; transition: border-color .15s ease;
+  }
+  input:focus, textarea:focus, select:focus{ border-color: var(--gold-dim); }
+  textarea{ resize: vertical; min-height: 84px; }
+  .row2{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+  .row3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:14px; }
+
+  .chip-group{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    padding: 8px 14px; border-radius: 999px; border:1px solid var(--border);
+    background: var(--bg-soft); font-size:12.5px; color: var(--text-dim); cursor:pointer;
+    user-select:none; transition: all .15s ease; font-weight:600;
+  }
+  .chip.active{ border-color: var(--emerald-dim); color: var(--emerald); background: rgba(52,211,153,0.08); }
+  .chip .fcount{
+    width:60px; margin-left:8px; display:none;
+    background: var(--panel); border:1px solid var(--border-soft); border-radius:6px;
+    color: var(--text); font-family: var(--font-mono); font-size:11px; padding: 3px 6px;
+  }
+  .chip.active .fcount{ display:inline-block; }
+
+  .btn{
+    font-family: var(--font-body); font-weight:700; font-size:14.5px; border:none;
+    padding: 13px 22px; border-radius: 999px; cursor:pointer; transition: all .15s ease;
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn-primary{ background: linear-gradient(90deg, var(--gold), #e2a83f); color:#1a1305; box-shadow: 0 8px 24px rgba(240,197,104,0.18); }
+  .btn-primary:hover{ transform: translateY(-1px); box-shadow: 0 10px 28px rgba(240,197,104,0.26); }
+  .btn-primary:disabled{ opacity:0.6; cursor:not-allowed; transform:none; }
+  .btn-ghost{ background: transparent; border:1px solid var(--border); color: var(--text-dim); }
+  .btn-ghost:hover{ border-color: var(--violet-dim); color: var(--violet); }
+  .btn-block{ width:100%; }
+  .btn-sm{ padding: 8px 14px; font-size:12.5px; }
+
+  .form-footer{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:20px; flex-wrap:wrap; }
+  .api-status{ font-family: var(--font-mono); font-size:11px; color: var(--text-faint); display:flex; align-items:center; gap:7px; }
+  .dot{ width:7px; height:7px; border-radius:50%; background: var(--text-faint); }
+  .dot.on{ background: var(--emerald); box-shadow: 0 0 8px var(--emerald); }
+  .dot.demo{ background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+
+  /* ---------- Loading ---------- */
+  .loading-box{ display:none; text-align:center; padding: 50px 20px; }
+  .loading-box.show{ display:block; }
+  .spinner{
+    width:44px; height:44px; margin:0 auto 18px; border-radius:50%;
+    border: 3px solid var(--border); border-top-color: var(--gold);
+    animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+  .loading-box p{ color: var(--text-dim); font-family: var(--font-mono); font-size:13px; }
+
+  /* ---------- Results ---------- */
+  #results{ display:none; }
+  #results.show{ display:block; }
+
+  .score-hero{ display:grid; grid-template-columns: 220px 1fr; gap:30px; align-items:center; }
+  .gauge-wrap{ position:relative; display:flex; align-items:center; justify-content:center; }
+  .gauge-num{ position:absolute; text-align:center; }
+  .gauge-num b{ font-family: var(--font-display); font-size:42px; display:block; line-height:1; }
+  .gauge-num span{ font-family: var(--font-mono); font-size:10.5px; color: var(--text-faint); letter-spacing:1px; }
+  .grade-badge{
+    display:inline-block; padding: 5px 12px; border-radius:999px; font-family: var(--font-mono);
+    font-size:11px; font-weight:600; letter-spacing:0.5px; margin-top:10px;
+  }
+  .score-desc h3{ font-family: var(--font-display); font-size:20px; margin-bottom:8px; }
+  .score-desc p{ color: var(--text-dim); font-size:14px; }
+
+  .radar-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-top:28px; }
+  @media (max-width: 760px){ .radar-grid{ grid-template-columns: 1fr; } .score-hero{ grid-template-columns:1fr; text-align:center; } .gauge-wrap{ margin: 0 auto; } }
+
+  .dim-list{ display:flex; flex-direction:column; gap:14px; }
+  .dim-row{ display:flex; align-items:center; gap:12px; }
+  .dim-label{ width:110px; font-size:12.5px; color: var(--text-dim); font-weight:600; flex-shrink:0; }
+  .dim-bar{ flex:1; height:8px; border-radius:99px; background: var(--bg-soft); overflow:hidden; border:1px solid var(--border-soft); }
+  .dim-fill{ height:100%; border-radius:99px; background: linear-gradient(90deg, var(--violet-dim), var(--violet)); }
+  .dim-val{ width:32px; text-align:right; font-family: var(--font-mono); font-size:12px; color: var(--text-faint); }
+
+  .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap:18px; }
+  @media (max-width:760px){ .two-col{ grid-template-columns:1fr; } }
+
+  .list-card{ background: var(--bg-soft); border:1px solid var(--border-soft); border-radius: var(--radius-sm); padding:18px; }
+  .list-card h4{ font-family: var(--font-display); font-size:14.5px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .list-card ul{ list-style:none; display:flex; flex-direction:column; gap:9px; }
+  .list-card li{ font-size:13.5px; color: var(--text-dim); padding-left:18px; position:relative; }
+  .list-card.strength li::before{ content:'+'; position:absolute; left:0; color: var(--emerald); font-weight:700; }
+  .list-card.weak li::before{ content:'!'; position:absolute; left:0; color: var(--red); font-weight:700; }
+
+  .pill-strip{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .pill{ background: var(--panel); border:1px solid var(--border); color: var(--text-dim); font-size:12px; padding:6px 12px; border-radius:999px; font-family: var(--font-mono); }
+
+  .tagline-card{
+    background: linear-gradient(135deg, rgba(240,197,104,0.06), rgba(167,139,250,0.05));
+    border:1px solid var(--border-soft); border-radius: var(--radius-sm); padding:16px 18px; margin-bottom:12px;
+    position:relative;
+  }
+  .tagline-card p{ font-family: var(--font-display); font-size:16px; font-weight:700; padding-right:70px; }
+  .copy-mini{
+    position:absolute; top:14px; right:14px; background: var(--panel); border:1px solid var(--border);
+    color: var(--text-faint); font-size:11px; padding: 5px 10px; border-radius:6px; cursor:pointer; font-family: var(--font-mono);
+  }
+  .copy-mini:hover{ color: var(--gold); border-color: var(--gold-dim); }
+
+  .roadmap{ display:flex; flex-direction:column; gap:10px; }
+  .week-row{ background: var(--bg-soft); border:1px solid var(--border-soft); border-radius:10px; padding:14px 16px; display:flex; gap:14px; }
+  .week-num{
+    font-family: var(--font-display); font-weight:800; font-size:20px; color: var(--gold);
+    width:52px; flex-shrink:0;
+  }
+  .week-body h5{ font-size:13.5px; margin-bottom:4px; }
+  .week-body p{ font-size:12.5px; color: var(--text-dim); }
+
+  .hinglish-box{
+    background: var(--bg-soft); border:1px solid var(--border-soft); border-left:3px solid var(--emerald);
+    border-radius: var(--radius-sm); padding:16px 18px; font-size:13.5px; color: var(--text-dim); line-height:1.7;
+  }
+
+  .results-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:22px; }
+
+  /* ---------- History ---------- */
+  .hist-item{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:12px 14px; border:1px solid var(--border-soft); border-radius: var(--radius-sm);
+    background: var(--bg-soft); margin-bottom:9px; cursor:pointer; transition: border-color .15s ease;
+  }
+  .hist-item:hover{ border-color: var(--gold-dim); }
+  .hist-left{ display:flex; align-items:center; gap:12px; }
+  .hist-score{
+    width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family: var(--font-display); font-weight:800; font-size:13px; flex-shrink:0;
+  }
+  .hist-name{ font-size:13.5px; font-weight:600; }
+  .hist-meta{ font-size:11px; color: var(--text-faint); font-family: var(--font-mono); }
+  .hist-del{ background:none; border:none; color: var(--text-faint); cursor:pointer; font-size:16px; padding:4px 8px; }
+  .hist-del:hover{ color: var(--red); }
+  .empty-note{ color: var(--text-faint); font-size:13px; font-family: var(--font-mono); text-align:center; padding: 20px 0; }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{
+    display:none; position:fixed; inset:0; background: rgba(5,6,10,0.75); backdrop-filter: blur(4px);
+    z-index:100; align-items:center; justify-content:center; padding:20px;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal-box{
+    background: var(--panel-2); border:1px solid var(--border); border-radius: var(--radius);
+    max-width: 560px; width:100%; max-height:82vh; overflow-y:auto; padding:26px;
+  }
+  .modal-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .modal-head h3{ font-family: var(--font-display); font-size:18px; }
+  .modal-close{ background:none; border:none; color: var(--text-faint); font-size:22px; cursor:pointer; line-height:1; }
+  .modal-close:hover{ color: var(--text); }
+  .modal-box h4{ font-family: var(--font-display); font-size:14px; margin: 16px 0 8px; color: var(--gold); }
+  .modal-box p, .modal-box li{ font-size:13.5px; color: var(--text-dim); line-height:1.7; }
+  .modal-box ul{ padding-left:20px; }
+  .modal-box code{ background: var(--bg-soft); padding:2px 6px; border-radius:5px; font-family: var(--font-mono); font-size:12px; color: var(--emerald); }
+
+  /* ---------- Premium lock ---------- */
+  .lock-wrap{ position:relative; }
+  .lock-blur{ filter: blur(6px); pointer-events:none; user-select:none; }
+  .lock-overlay{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:10px; background: linear-gradient(180deg, rgba(11,13,18,0.2), rgba(11,13,18,0.75));
+    border-radius: var(--radius-sm); padding:16px;
+  }
+  .lock-overlay .lock-icon{ font-size:22px; }
+  .lock-overlay p{ font-size:12.5px; color: var(--text-dim); max-width:260px; }
+  .premium-strip{
+    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    background: linear-gradient(135deg, rgba(240,197,104,0.1), rgba(167,139,250,0.08));
+    border:1px solid var(--gold-dim); border-radius: var(--radius-sm); padding:16px 18px; margin: 22px 0;
+  }
+  .premium-strip h4{ font-family: var(--font-display); font-size:15px; margin-bottom:4px; }
+  .premium-strip p{ font-size:12.5px; color: var(--text-dim); }
+  .premium-badge{
+    display:inline-flex; align-items:center; gap:5px; background: rgba(240,197,104,0.12); color: var(--gold);
+    border:1px solid var(--gold-dim); font-family: var(--font-mono); font-size:10.5px; padding:4px 10px;
+    border-radius:999px; margin-left:8px; letter-spacing:0.5px;
+  }
+
+  /* ---------- WhatsApp CTA ---------- */
+  .cta-card{
+    background: linear-gradient(135deg, rgba(52,211,153,0.09), rgba(240,197,104,0.05));
+    border:1px solid var(--emerald-dim); border-radius: var(--radius); padding:24px; margin-top:22px;
+    display:flex; align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap;
+  }
+  .cta-card h4{ font-family: var(--font-display); font-size:17px; margin-bottom:6px; }
+  .cta-card p{ font-size:13px; color: var(--text-dim); max-width:400px; }
+  .btn-whatsapp{
+    background: linear-gradient(90deg, var(--emerald), var(--emerald-dim)); color:#062018;
+    font-weight:700; padding:12px 20px; border-radius:999px; border:none; cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px; font-size:14px; flex-shrink:0;
+  }
+  .btn-whatsapp:hover{ filter: brightness(1.08); }
+
+  footer{ border-top:1px solid var(--border-soft); padding: 26px 0 40px; text-align:center; }
+  footer p{ color: var(--text-faint); font-size:12px; font-family: var(--font-mono); }
+
+  @media (max-width: 640px){
+    .row2, .row3{ grid-template-columns: 1fr; }
+    .hero{ padding: 40px 0 24px; }
+  }
+
+  @media print{
+    .topbar, .hero, .card:not(#results .card), footer, .results-actions, #inputCard, #historyCard, .ad-slot, .cta-card, .premium-strip{ display:none !important; }
+    body{ background:#fff; color:#000; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark">PB</div>
+      <div class="brand-text">Personal Brand Analyzer<span>INCOMEAIHUB.COM</span></div>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" onclick="openModal('guideModal')">📘 Hindi Guide</button>
+      <button class="icon-btn" onclick="openModal('apiModal')">⚙️ API Setup</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">AI PERSONAL BRAND AUDIT</div>
+    <h1>Find out what your <em>personal brand</em> actually says about you.</h1>
+    <p>Apna naam, profession aur bio daaliye — AI aapko brand score, positioning statement, content pillars aur ek 30-din ka action plan degा. CA, freelancer, coach ya creator — sabke liye.</p>
+    <div class="hero-stats">
+      <div class="hstat"><b>5</b><span>SCORE DIMENSIONS</span></div>
+      <div class="hstat"><b>30-DAY</b><span>ACTION ROADMAP</span></div>
+      <div class="hstat"><b>FREE</b><span>NO SIGNUP NEEDED</span></div>
+    </div>
+  </section>
+
+  <div class="ad-slot">AD SLOT — 728x90 — LEADERBOARD</div>
+
+  <div class="layout">
+
+    <!-- INPUT CARD -->
+    <div class="card" id="inputCard">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Tell us about your brand</div>
+          <div class="card-sub">FIELDS MARKED * ARE REQUIRED</div>
+        </div>
+      </div>
+
+      <form id="brandForm">
+        <div class="row2">
+          <div class="field">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" id="f_name" placeholder="e.g. Mamta Sahu" required>
+          </div>
+          <div class="field">
+            <label>Profession / Niche <span class="req">*</span></label>
+            <input type="text" id="f_profession" placeholder="e.g. Freelance Web Developer" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Current Tagline / Headline <span class="hint" style="display:inline">(optional — what your bio currently says)</span></label>
+          <input type="text" id="f_tagline" placeholder="e.g. Web developer helping small businesses grow online">
+        </div>
+
+        <div class="field">
+          <label>About / Bio <span class="req">*</span></label>
+          <textarea id="f_about" placeholder="Paste your LinkedIn/Instagram bio or write 2-3 lines about what you do, who you help, and why." required></textarea>
+          <div class="hint">Longer, more specific bios score higher on clarity.</div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Target Audience <span class="req">*</span></label>
+            <input type="text" id="f_audience" placeholder="e.g. Indian CA firms and MSMEs" required>
+          </div>
+          <div class="field">
+            <label>Primary Goal</label>
+            <select id="f_goal">
+              <option value="clients">Get more clients</option>
+              <option value="authority">Build authority / thought leadership</option>
+              <option value="job">Land a job / promotion</option>
+              <option value="followers">Grow audience & followers</option>
+              <option value="sales">Sell a product or course</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Active Platforms <span class="hint" style="display:inline">(select and add follower count)</span></label>
+          <div class="chip-group" id="platformChips">
+            <div class="chip" data-platform="LinkedIn">LinkedIn <input class="fcount" type="number" min="0" placeholder="followers"></div>
+            <div class="chip" data-platform="Instagram">Instagram <input class="fcount" type="number" min="0" placeholder="followers"></div>
+            <div class="chip" data-platform="Twitter/X">Twitter/X <input class="fcount" type="number" min="0" placeholder="followers"></div>
+            <div class="chip" data-platform="YouTube">YouTube <input class="fcount" type="number" min="0" placeholder="followers"></div>
+            <div class="chip" data-platform="Facebook">Facebook <input class="fcount" type="number" min="0" placeholder="followers"></div>
+            <div class="chip" data-platform="Website">Website / Blog <input class="fcount" type="number" min="0" placeholder="visitors"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Posting Frequency</label>
+          <select id="f_freq">
+            <option value="daily">Daily</option>
+            <option value="weekly" selected>A few times a week</option>
+            <option value="monthly">A few times a month</option>
+            <option value="rarely">Rarely / inconsistent</option>
+          </select>
+        </div>
+
+        <div class="form-footer">
+          <div class="api-status">
+            <span class="dot" id="apiDot"></span>
+            <span id="apiStatusText">Checking API key…</span>
+          </div>
+          <button type="submit" class="btn btn-primary" id="analyzeBtn">✨ Analyze My Brand</button>
+        </div>
+      </form>
+
+      <div class="loading-box" id="loadingBox">
+        <div class="spinner"></div>
+        <p id="loadingText">Analyzing your brand DNA…</p>
+      </div>
+    </div>
+
+    <div class="ad-slot">AD SLOT — 336x280 — IN-CONTENT</div>
+
+    <!-- RESULTS -->
+    <div class="card" id="results">
+      <div class="card-head">
+        <div>
+          <div class="card-title" id="resultsName">Brand Report</div>
+          <div class="card-sub" id="resultsMeta">GENERATED JUST NOW</div>
+        </div>
+      </div>
+
+      <div class="score-hero">
+        <div class="gauge-wrap">
+          <svg width="200" height="200" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="86" fill="none" stroke="#232838" stroke-width="14"/>
+            <circle id="gaugeCircle" cx="100" cy="100" r="86" fill="none" stroke="url(#gaugeGrad)" stroke-width="14"
+              stroke-linecap="round" stroke-dasharray="540" stroke-dashoffset="540" transform="rotate(-90 100 100)"/>
+            <defs>
+              <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f0c568"/>
+                <stop offset="100%" stop-color="#34d399"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="gauge-num">
+            <b id="scoreNum">0</b>
+            <span>BRAND SCORE / 100</span>
+            <div class="grade-badge" id="gradeBadge">—</div>
+          </div>
+        </div>
+        <div class="score-desc">
+          <h3 id="scoreHeadline">Your brand snapshot</h3>
+          <p id="scoreSummary">—</p>
+        </div>
+      </div>
+
+      <div class="radar-grid">
+        <div>
+          <h4 style="font-family:var(--font-display);font-size:14.5px;margin-bottom:14px;">Score Breakdown</h4>
+          <div class="dim-list" id="dimList"></div>
+        </div>
+        <div class="hinglish-box" id="hinglishBox">—</div>
+      </div>
+
+      <div style="margin-top:28px;">
+        <h4 style="font-family:var(--font-display);font-size:14.5px;margin-bottom:12px;">Suggested Positioning Statements <span class="premium-badge" id="taglineLockBadge" style="display:none;">🔒 2 MORE — PREMIUM</span></h4>
+        <div id="taglineList"></div>
+      </div>
+
+      <div class="two-col" style="margin-top:22px;">
+        <div class="list-card strength">
+          <h4>💪 Strengths</h4>
+          <ul id="strengthsList"></ul>
+        </div>
+        <div class="list-card weak">
+          <h4>⚠️ Gaps to Fix</h4>
+          <ul id="weaknessesList"></ul>
+        </div>
+      </div>
+
+      <div style="margin-top:22px;">
+        <h4 style="font-family:var(--font-display);font-size:14.5px;margin-bottom:10px;">Content Pillars</h4>
+        <div class="pill-strip" id="pillarsStrip"></div>
+      </div>
+
+      <div style="margin-top:22px;">
+        <h4 style="font-family:var(--font-display);font-size:14.5px;margin-bottom:10px;">Suggested Hashtags</h4>
+        <div class="pill-strip" id="hashtagStrip"></div>
+      </div>
+
+      <div class="premium-strip" id="premiumStrip">
+        <div>
+          <h4>🔓 Unlock Full Report — ₹149</h4>
+          <p>Get all 3 positioning statements, the complete 4-week roadmap, unlimited saved history & watermark-free PDF export.</p>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openRazorpayCheckout()">Unlock Premium</button>
+      </div>
+
+      <div style="margin-top:26px;">
+        <h4 style="font-family:var(--font-display);font-size:14.5px;margin-bottom:12px;">30-Day Action Roadmap <span class="premium-badge" id="roadmapLockBadge" style="display:none;">🔒 WEEKS 2-4 — PREMIUM</span></h4>
+        <div class="roadmap" id="roadmapList"></div>
+      </div>
+
+      <div class="results-actions">
+        <button class="btn btn-ghost btn-sm" onclick="copyReport()">📋 Copy Report</button>
+        <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ Print / Save PDF</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('inputCard').scrollIntoView({behavior:'smooth'})">✏️ Edit Inputs</button>
+      </div>
+
+      <div class="cta-card">
+        <div>
+          <h4>Chahiye ek professional brand banane mein madad?</h4>
+          <p>Personalized branding, website ya content strategy chahiye? Directly WhatsApp par baat karein — free 15-min consultation.</p>
+        </div>
+        <button class="btn-whatsapp" onclick="openWhatsApp()">💬 WhatsApp par Baat Karein</button>
+      </div>
+    </div>
+
+    <div class="ad-slot">AD SLOT — 728x90 — MID PAGE</div>
+
+    <!-- HISTORY -->
+    <div class="card" id="historyCard">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Past Analyses</div>
+          <div class="card-sub">SAVED ON THIS DEVICE ONLY</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="clearHistory()">🗑️ Clear All</button>
+      </div>
+      <div id="historyList"></div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <p>Personal Brand Analyzer — Part of the IncomeAIHub tool suite · Built for Indian freelancers, CAs & MSMEs</p>
+</footer>
+
+<!-- GUIDE MODAL -->
+<div class="modal-overlay" id="guideModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>📘 Istemal kaise karein (Hindi Guide)</h3>
+      <button class="modal-close" onclick="closeModal('guideModal')">×</button>
+    </div>
+    <p>Ye tool aapke personal brand ka AI-powered audit karta hai — 2 minute mein pura report milega.</p>
+    <h4>Step 1 — Apni details bharein</h4>
+    <ul>
+      <li>Apna naam, profession/niche aur ek short bio likhein.</li>
+      <li>Target audience batayein — jaise "Raipur ke CA firms" ya "small business owners".</li>
+      <li>Jin platforms par aap active hain unhe select karein aur followers count daalein (agar pata ho).</li>
+    </ul>
+    <h4>Step 2 — Analyze My Brand par click karein</h4>
+    <p>AI aapke inputs ko analyze karke ek <code>Brand Score (0-100)</code> dega, saath hi 5 dimensions par breakdown: Clarity, Consistency, Visibility, Authenticity, aur Engagement.</p>
+    <h4>Step 3 — Report padhein aur use karein</h4>
+    <ul>
+      <li><b>Positioning Statements</b> — apne bio mein copy-paste karne layak taglines.</li>
+      <li><b>Content Pillars</b> — kis topic par content banayein.</li>
+      <li><b>30-Day Roadmap</b> — har hafte kya karna hai, step-by-step.</li>
+    </ul>
+    <h4>API Key (Optional)</h4>
+    <p>Bina API key ke bhi tool kaam karega (Demo Mode — smart rule-based analysis). Zyada personalized AI analysis ke liye, "API Setup" mein apni Claude API key daalein.</p>
+    <h4>Premium Unlock (₹149)</h4>
+    <p>Free report mein 1 positioning statement, Week 1 ka roadmap, aur last 3 saved history items milte hain. "Unlock Premium" button dabakar sab kuch unlock ho jaata hai — sabhi positioning statements, poora 4-week roadmap, unlimited history, aur clean PDF export.</p>
+    <h4>Expert Help CTA</h4>
+    <p>Report ke neeche "WhatsApp par Baat Karein" button hai — jo bhi click karega, seedha aapke WhatsApp number par ek pre-filled message ke saath pahunch jaayega. Ye aapke liye free leads generate karta hai.</p>
+    <h4>Data Privacy</h4>
+    <p>Aapka data sirf aapke browser (localStorage) mein save hota hai — kahi server par nahi jaata.</p>
+  </div>
+</div>
+
+<!-- API MODAL -->
+<div class="modal-overlay" id="apiModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>⚙️ Claude API Setup</h3>
+      <button class="modal-close" onclick="closeModal('apiModal')">×</button>
+    </div>
+    <p style="margin-bottom:14px;">Add your Claude API key for deeper, fully personalized AI analysis. Without a key, the tool runs in <b>Demo Mode</b> using a smart rule-based engine — still fully functional.</p>
+    <div class="field">
+      <label>Claude API Key</label>
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-...">
+      <div class="hint">Stored only in your browser's localStorage. Never sent anywhere except Anthropic's API.</div>
+    </div>
+    <div style="display:flex; gap:10px; margin-top:14px;">
+      <button class="btn btn-primary btn-sm" onclick="saveApiKey()">Save Key</button>
+      <button class="btn btn-ghost btn-sm" onclick="removeApiKey()">Remove Key</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ STATE ============ */
+const LS_HISTORY = 'pba_history_v1';
+const LS_APIKEY = 'pba_apikey_v1';
+const LS_PREMIUM = 'pba_premium_v1';
+let selectedPlatforms = {};
+
+/* ============ CONFIG — EDIT THESE ============ */
+const RAZORPAY_KEY_ID = 'rzp_test_YOUR_KEY_HERE'; // Replace with your live Razorpay Key ID
+const PREMIUM_PRICE_PAISE = 14900; // ₹149 in paise
+const WHATSAPP_NUMBER = '91XXXXXXXXXX'; // Replace with your WhatsApp number, country code + number, no + or spaces
+
+/* ============ PREMIUM ============ */
+function isPremiumUnlocked(){ return localStorage.getItem(LS_PREMIUM) === 'yes'; }
+function unlockPremium(){
+  localStorage.setItem(LS_PREMIUM, 'yes');
+  document.getElementById('premiumStrip').style.display = 'none';
+  const hist = getHistory();
+  if(hist.length){ renderResults(hist[0].name, hist[0].result); }
+  alert('Premium unlocked! Full report, unlimited history & watermark-free export are now active.');
+}
+function openRazorpayCheckout(){
+  if(isPremiumUnlocked()){ alert('Premium is already unlocked on this device.'); return; }
+  if(typeof Razorpay === 'undefined'){ alert('Payment gateway failed to load. Please check your internet connection and try again.'); return; }
+  const options = {
+    key: RAZORPAY_KEY_ID,
+    amount: PREMIUM_PRICE_PAISE,
+    currency: 'INR',
+    name: 'Personal Brand Analyzer',
+    description: 'Full Report Unlock — Premium',
+    handler: function(response){ unlockPremium(); },
+    theme: { color: '#f0c568' }
+  };
+  const rzp = new Razorpay(options);
+  rzp.on('payment.failed', function(resp){ alert('Payment failed. Please try again.'); });
+  rzp.open();
+}
+
+/* ============ WHATSAPP LEAD CTA ============ */
+function openWhatsApp(){
+  const name = (document.getElementById('f_name')?.value || '').trim();
+  const profession = (document.getElementById('f_profession')?.value || '').trim();
+  let msg = 'Hi! I just used the Personal Brand Analyzer';
+  if(name) msg += ` (I'm ${name}${profession ? ', ' + profession : ''})`;
+  msg += ' and I would like help improving my personal brand. Can we talk?';
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
+
+/* ============ CHIP HANDLING ============ */
+document.querySelectorAll('#platformChips .chip').forEach(chip => {
+  chip.addEventListener('click', (e) => {
+    if(e.target.classList.contains('fcount')) return;
+    chip.classList.toggle('active');
+    const platform = chip.dataset.platform;
+    if(chip.classList.contains('active')){
+      selectedPlatforms[platform] = 0;
+    } else {
+      delete selectedPlatforms[platform];
+    }
+  });
+  const countInput = chip.querySelector('.fcount');
+  countInput.addEventListener('click', e => e.stopPropagation());
+  countInput.addEventListener('input', () => {
+    selectedPlatforms[chip.dataset.platform] = parseInt(countInput.value) || 0;
+  });
+});
+
+/* ============ API KEY MGMT ============ */
+function getApiKey(){ return localStorage.getItem(LS_APIKEY) || ''; }
+function saveApiKey(){
+  const val = document.getElementById('apiKeyInput').value.trim();
+  if(val){ localStorage.setItem(LS_APIKEY, val); refreshApiStatus(); closeModal('apiModal'); }
+}
+function removeApiKey(){
+  localStorage.removeItem(LS_APIKEY);
+  document.getElementById('apiKeyInput').value = '';
+  refreshApiStatus();
+}
+function refreshApiStatus(){
+  const key = getApiKey();
+  const dot = document.getElementById('apiDot');
+  const text = document.getElementById('apiStatusText');
+  if(key){
+    dot.className = 'dot on';
+    text.textContent = 'Claude API connected — full AI analysis';
+  } else {
+    dot.className = 'dot demo';
+    text.textContent = 'Demo Mode — smart rule-based analysis (no key set)';
+  }
+}
+refreshApiStatus();
+
+/* ============ MODALS ============ */
+function openModal(id){ document.getElementById(id).classList.add('show'); }
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+document.querySelectorAll('.modal-overlay').forEach(ov => {
+  ov.addEventListener('click', e => { if(e.target === ov) ov.classList.remove('show'); });
+});
+
+/* ============ FALLBACK ANALYSIS ENGINE (Demo Mode) ============ */
+function fallbackAnalyze(data){
+  const aboutLen = data.about.trim().split(/\s+/).filter(Boolean).length;
+  const hasTagline = data.tagline.trim().length > 5;
+  const platformCount = Object.keys(data.platforms).length;
+  const totalFollowers = Object.values(data.platforms).reduce((a,b) => a+b, 0);
+  const freqScore = {daily:100, weekly:75, monthly:45, rarely:15}[data.freq] ?? 50;
+
+  // Clarity: tagline presence + about specificity
+  let clarity = 30;
+  if(hasTagline) clarity += 25;
+  if(aboutLen >= 15) clarity += 20;
+  if(aboutLen >= 35) clarity += 15;
+  if(data.audience.trim().split(/\s+/).length >= 3) clarity += 10;
+  clarity = Math.min(100, clarity);
+
+  // Consistency: platform count + posting frequency
+  let consistency = Math.min(100, platformCount * 14 + freqScore * 0.4);
+
+  // Visibility: followers + platform spread
+  let visibility = Math.min(100, Math.log10(totalFollowers + 10) * 22 + platformCount * 6);
+
+  // Authenticity: heuristic from about text — personal words, story markers
+  const personalWords = (data.about.match(/\b(I|my|myself|main|mera|meri)\b/gi) || []).length;
+  let authenticity = 45 + Math.min(35, personalWords * 6) + (aboutLen > 20 ? 10 : 0);
+  authenticity = Math.min(100, authenticity);
+
+  // Engagement: freq + follower/platform ratio proxy
+  let engagement = Math.min(100, freqScore * 0.55 + (platformCount ? Math.min(30, totalFollowers/Math.max(1,platformCount)/50) : 0));
+
+  const dims = {
+    Clarity: Math.round(clarity),
+    Consistency: Math.round(consistency),
+    Visibility: Math.round(visibility),
+    Authenticity: Math.round(authenticity),
+    Engagement: Math.round(engagement)
+  };
+  const overall = Math.round(Object.values(dims).reduce((a,b)=>a+b,0) / 5);
+
+  const strengths = [];
+  const weaknesses = [];
+  if(dims.Clarity >= 65) strengths.push('Your bio clearly communicates who you are and who you help.');
+  else weaknesses.push('Your bio is vague — add a specific outcome you deliver for clients.');
+  if(dims.Consistency >= 65) strengths.push('You maintain a consistent presence across platforms.');
+  else weaknesses.push('Posting is inconsistent — irregular activity weakens brand recall.');
+  if(dims.Visibility >= 55) strengths.push('You have a solid, discoverable footprint online.');
+  else weaknesses.push('Low visibility — followers/traffic are too thin to be found organically.');
+  if(dims.Authenticity >= 65) strengths.push('Your voice feels personal and human, not generic.');
+  else weaknesses.push('Bio reads generic — add a personal story or specific numbers/results.');
+  if(dims.Engagement >= 55) strengths.push('Your activity level suggests healthy audience engagement.');
+  else weaknesses.push('Engagement signals are weak — posting frequency needs to increase.');
+  if(platformCount <= 1) weaknesses.push('You rely on a single platform — this is risky if reach drops there.');
+  if(!hasTagline) weaknesses.push('No clear tagline/headline — first impression is currently undefined.');
+  if(strengths.length === 0) strengths.push('You have a foundation to build on — consistency will compound fast.');
+
+  const niche = data.profession;
+  const audience = data.audience;
+  const taglines = [
+    `Helping ${audience} with practical, no-fluff ${niche.toLowerCase()} solutions.`,
+    `${data.name} — ${niche} for ${audience}, focused on real results.`,
+    `I help ${audience} solve their toughest ${niche.toLowerCase()} problems, faster.`
+  ];
+
+  const pillars = [
+    `${niche} tips & how-tos`,
+    `Behind-the-scenes of working with ${audience}`,
+    `Case studies & client wins`,
+    `Industry news relevant to ${audience}`,
+    `Personal journey & lessons learned`
+  ];
+
+  const baseTag = niche.toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(Boolean);
+  const hashtags = [...new Set([
+    '#'+baseTag.join(''), '#'+(baseTag[0]||'brand'), '#PersonalBranding',
+    '#'+audience.toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/)[0],
+    '#IndianFreelancer', '#'+(baseTag[baseTag.length-1]||'expert')
+  ])].filter(h => h.length > 1).slice(0,8);
+
+  const roadmap = [
+    {t:'Week 1 — Foundation', d:`Rewrite your bio/tagline on every platform using one of the positioning statements above. Make sure ${data.name} is searchable with "${niche}" in the name/headline.`},
+    {t:'Week 2 — Content System', d:`Pick 2 of your content pillars and publish 3 posts each, mixing tips and one personal story. Post at consistent times.`},
+    {t:'Week 3 — Visibility Push', d:`Engage daily with 10 accounts in your niche, join 2 relevant communities/groups, and share one case study or client result.`},
+    {t:'Week 4 — Review & Double Down', d:`Check which post got the best response, do a follow-up on that topic, and ask 3 happy clients for a testimonial to feature.`}
+  ];
+
+  const hinglish = `Aapka overall brand score ${overall}/100 hai. ${dims.Clarity < 60 ? 'Sabse pehle apni bio ko clear aur specific banayein.' : 'Aapki bio kaafi clear hai.'} ${dims.Consistency < 60 ? 'Posting consistency badhaayein — hafte mein kam se kam 3 baar active rahein.' : 'Aap consistently active hain, yeh accha sign hai.'} Upar diye gaye positioning statements aur 30-din ke roadmap ko follow karke agle mahine tak aap apna brand kaafi strong bana sakte hain.`;
+
+  return { overall, dims, strengths, weaknesses, taglines, pillars, hashtags, roadmap, hinglish };
+}
+
+/* ============ CLAUDE API ANALYSIS ============ */
+async function apiAnalyze(data){
+  const prompt = `You are a personal branding strategist. Analyze this person's personal brand and respond with ONLY a valid JSON object (no markdown, no preamble) matching exactly this schema:
+{
+  "overall": <int 0-100>,
+  "dims": {"Clarity": <int>, "Consistency": <int>, "Visibility": <int>, "Authenticity": <int>, "Engagement": <int>},
+  "strengths": [<3-5 short strings>],
+  "weaknesses": [<3-5 short strings>],
+  "taglines": [<3 short positioning statement strings>],
+  "pillars": [<4-6 content pillar strings>],
+  "hashtags": [<6-8 hashtag strings starting with #>],
+  "roadmap": [{"t":"Week 1 - ...","d":"..."}, {"t":"Week 2 - ...","d":"..."}, {"t":"Week 3 - ...","d":"..."}, {"t":"Week 4 - ...","d":"..."}],
+  "hinglish": "<3-4 sentence summary written in Hinglish (Hindi-English mix using Latin script)>"
+}
+
+Person's data:
+Name: ${data.name}
+Profession/Niche: ${data.profession}
+Current tagline: ${data.tagline || 'none'}
+Bio: ${data.about}
+Target audience: ${data.audience}
+Primary goal: ${data.goal}
+Platforms & followers: ${JSON.stringify(data.platforms)}
+Posting frequency: ${data.freq}
+
+Be specific to this person's actual niche and audience — do not give generic advice.`;
+
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 1500,
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+  const json = await response.json();
+  const textBlock = (json.content || []).find(b => b.type === 'text');
+  if(!textBlock) throw new Error('No text response from API');
+  const clean = textBlock.text.replace(/```json|```/g, '').trim();
+  const parsed = JSON.parse(clean);
+  return parsed;
+}
+
+/* ============ RENDER ============ */
+function gradeFor(score){
+  if(score >= 85) return {label:'EXCELLENT', color:'var(--emerald)'};
+  if(score >= 70) return {label:'STRONG', color:'var(--gold)'};
+  if(score >= 50) return {label:'DEVELOPING', color:'var(--violet)'};
+  return {label:'NEEDS WORK', color:'var(--red)'};
+}
+
+function renderResults(name, result){
+  const { overall, dims, strengths, weaknesses, taglines, pillars, hashtags, roadmap, hinglish } = result;
+
+  document.getElementById('resultsName').textContent = `${name}'s Brand Report`;
+  document.getElementById('resultsMeta').textContent = 'GENERATED ' + new Date().toLocaleString();
+
+  // gauge animation
+  const circle = document.getElementById('gaugeCircle');
+  const circumference = 540;
+  const offset = circumference - (circumference * overall / 100);
+  requestAnimationFrame(() => { circle.style.transition = 'stroke-dashoffset 1s ease'; circle.style.strokeDashoffset = offset; });
+  document.getElementById('scoreNum').textContent = overall;
+
+  const grade = gradeFor(overall);
+  const badge = document.getElementById('gradeBadge');
+  badge.textContent = grade.label;
+  badge.style.color = grade.color;
+  badge.style.border = `1px solid ${grade.color}`;
+  badge.style.background = 'transparent';
+
+  document.getElementById('scoreHeadline').textContent =
+    overall >= 70 ? 'Your brand is in strong shape.' :
+    overall >= 50 ? 'You have a solid base — a few gaps to close.' :
+    'Your brand needs a clear rebuild.';
+  document.getElementById('scoreSummary').textContent =
+    `Based on clarity, consistency, visibility, authenticity and engagement across your inputs, here's where you stand — and exactly what to fix next.`;
+
+  // dims
+  const dimList = document.getElementById('dimList');
+  dimList.innerHTML = '';
+  Object.entries(dims).forEach(([k,v]) => {
+    const row = document.createElement('div');
+    row.className = 'dim-row';
+    row.innerHTML = `<div class="dim-label">${k}</div><div class="dim-bar"><div class="dim-fill" style="width:0%"></div></div><div class="dim-val">${v}</div>`;
+    dimList.appendChild(row);
+    requestAnimationFrame(() => { row.querySelector('.dim-fill').style.transition = 'width 0.9s ease'; row.querySelector('.dim-fill').style.width = v + '%'; });
+  });
+
+  document.getElementById('hinglishBox').textContent = hinglish;
+
+  const premium = isPremiumUnlocked();
+  document.getElementById('premiumStrip').style.display = premium ? 'none' : 'flex';
+
+  const taglineList = document.getElementById('taglineList');
+  taglineList.innerHTML = '';
+  const taglineBadge = document.getElementById('taglineLockBadge');
+  taglineBadge.style.display = (!premium && taglines.length > 1) ? 'inline-flex' : 'none';
+  taglines.forEach((t, i) => {
+    const div = document.createElement('div');
+    const locked = !premium && i > 0;
+    div.className = 'tagline-card' + (locked ? ' lock-wrap' : '');
+    if(locked){
+      div.innerHTML = `<div class="lock-blur"><p>"${t}"</p></div>
+        <div class="lock-overlay"><span class="lock-icon">🔒</span><p>Unlock all positioning statements with Premium (₹149)</p></div>`;
+    } else {
+      div.innerHTML = `<p>"${t}"</p><button class="copy-mini" onclick="copyText(this, ${JSON.stringify(t)})">Copy</button>`;
+    }
+    taglineList.appendChild(div);
+  });
+
+  document.getElementById('strengthsList').innerHTML = strengths.map(s => `<li>${s}</li>`).join('');
+  document.getElementById('weaknessesList').innerHTML = weaknesses.map(s => `<li>${s}</li>`).join('');
+  document.getElementById('pillarsStrip').innerHTML = pillars.map(p => `<span class="pill">${p}</span>`).join('');
+  document.getElementById('hashtagStrip').innerHTML = hashtags.map(h => `<span class="pill">${h}</span>`).join('');
+
+  const roadmapBadge = document.getElementById('roadmapLockBadge');
+  roadmapBadge.style.display = (!premium && roadmap.length > 1) ? 'inline-flex' : 'none';
+  document.getElementById('roadmapList').innerHTML = roadmap.map((r,i) => {
+    const locked = !premium && i > 0;
+    if(locked){
+      return `<div class="week-row lock-wrap">
+        <div class="lock-blur" style="display:flex; gap:14px; width:100%;">
+          <div class="week-num">${String(i+1).padStart(2,'0')}</div>
+          <div class="week-body"><h5>${r.t}</h5><p>${r.d}</p></div>
+        </div>
+        <div class="lock-overlay"><span class="lock-icon">🔒</span><p>Unlock the full 4-week roadmap with Premium</p></div>
+      </div>`;
+    }
+    return `<div class="week-row">
+      <div class="week-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="week-body"><h5>${r.t}</h5><p>${r.d}</p></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('results').classList.add('show');
+  document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* ============ HISTORY ============ */
+function getHistory(){ try{ return JSON.parse(localStorage.getItem(LS_HISTORY)) || []; } catch(e){ return []; } }
+function saveToHistory(entry){
+  const hist = getHistory();
+  hist.unshift(entry);
+  localStorage.setItem(LS_HISTORY, JSON.stringify(hist.slice(0,25)));
+  renderHistory();
+}
+function clearHistory(){
+  if(confirm('Delete all saved analyses from this device?')){
+    localStorage.removeItem(LS_HISTORY);
+    renderHistory();
+  }
+}
+function deleteHistoryItem(idx, e){
+  e.stopPropagation();
+  const hist = getHistory();
+  hist.splice(idx,1);
+  localStorage.setItem(LS_HISTORY, JSON.stringify(hist));
+  renderHistory();
+}
+function loadHistoryItem(idx){
+  const hist = getHistory();
+  const item = hist[idx];
+  if(!item) return;
+  renderResults(item.name, item.result);
+}
+function renderHistory(){
+  const hist = getHistory();
+  const el = document.getElementById('historyList');
+  if(hist.length === 0){
+    el.innerHTML = '<div class="empty-note">No analyses saved yet — your reports will appear here.</div>';
+    return;
+  }
+  const premium = isPremiumUnlocked();
+  const freeLimit = 3;
+  el.innerHTML = hist.map((h, i) => {
+    const grade = gradeFor(h.result.overall);
+    const locked = !premium && i >= freeLimit;
+    if(locked){
+      return `<div class="hist-item lock-wrap" style="cursor:default;">
+        <div class="lock-blur" style="display:flex; align-items:center; gap:12px;">
+          <div class="hist-score" style="background:rgba(240,197,104,0.1); color:${grade.color}; border:1px solid ${grade.color};">${h.result.overall}</div>
+          <div><div class="hist-name">${h.name}</div><div class="hist-meta">${h.profession} · ${h.date}</div></div>
+        </div>
+        <div class="lock-overlay"><span class="lock-icon">🔒</span><p>Unlock unlimited saved history with Premium (₹149)</p></div>
+      </div>`;
+    }
+    return `<div class="hist-item" onclick="loadHistoryItem(${i})">
+      <div class="hist-left">
+        <div class="hist-score" style="background:rgba(240,197,104,0.1); color:${grade.color}; border:1px solid ${grade.color};">${h.result.overall}</div>
+        <div><div class="hist-name">${h.name}</div><div class="hist-meta">${h.profession} · ${h.date}</div></div>
+      </div>
+      <button class="hist-del" onclick="deleteHistoryItem(${i}, event)">✕</button>
+    </div>`;
+  }).join('');
+}
+renderHistory();
+
+/* ============ COPY / EXPORT ============ */
+function copyText(btn, text){
+  navigator.clipboard.writeText(text).then(() => {
+    const old = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = old, 1500);
+  });
+}
+function copyReport(){
+  const name = document.getElementById('resultsName').textContent;
+  const score = document.getElementById('scoreNum').textContent;
+  const hinglish = document.getElementById('hinglishBox').textContent;
+  const strengths = [...document.querySelectorAll('#strengthsList li')].map(li => '+ ' + li.textContent).join('\n');
+  const weaknesses = [...document.querySelectorAll('#weaknessesList li')].map(li => '! ' + li.textContent).join('\n');
+  const taglines = [...document.querySelectorAll('.tagline-card p')].map(p => p.textContent).join('\n');
+  const pillars = [...document.querySelectorAll('#pillarsStrip .pill')].map(p => '- ' + p.textContent).join('\n');
+  const roadmap = [...document.querySelectorAll('#roadmapList .week-row')].map(w => `${w.querySelector('h5').textContent}: ${w.querySelector('p').textContent}`).join('\n');
+
+  const text = `${name}\nBrand Score: ${score}/100\n\nSUMMARY (Hinglish):\n${hinglish}\n\nSTRENGTHS:\n${strengths}\n\nGAPS TO FIX:\n${weaknesses}\n\nPOSITIONING STATEMENTS:\n${taglines}\n\nCONTENT PILLARS:\n${pillars}\n\n30-DAY ROADMAP:\n${roadmap}\n\n— Generated by Personal Brand Analyzer, IncomeAIHub`;
+
+  navigator.clipboard.writeText(text).then(() => alert('Full report copied to clipboard!'));
+}
+
+/* ============ FORM SUBMIT ============ */
+document.getElementById('brandForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const data = {
+    name: document.getElementById('f_name').value.trim(),
+    profession: document.getElementById('f_profession').value.trim(),
+    tagline: document.getElementById('f_tagline').value.trim(),
+    about: document.getElementById('f_about').value.trim(),
+    audience: document.getElementById('f_audience').value.trim(),
+    goal: document.getElementById('f_goal').value,
+    platforms: selectedPlatforms,
+    freq: document.getElementById('f_freq').value
+  };
+
+  if(!data.name || !data.profession || !data.about || !data.audience){
+    alert('Please fill all required fields (marked with *).');
+    return;
+  }
+
+  const btn = document.getElementById('analyzeBtn');
+  const loadingBox = document.getElementById('loadingBox');
+  const loadingText = document.getElementById('loadingText');
+  btn.disabled = true;
+  loadingBox.classList.add('show');
+
+  const key = getApiKey();
+  let result;
+  const messages = key
+    ? ['Analyzing your brand with Claude AI…', 'Scoring clarity, visibility & engagement…', 'Writing your positioning statements…', 'Building your 30-day roadmap…']
+    : ['Running Demo Mode analysis…', 'Scoring your brand dimensions…', 'Generating recommendations…'];
+  let mi = 0;
+  loadingText.textContent = messages[0];
+  const msgInterval = setInterval(() => { mi = (mi+1) % messages.length; loadingText.textContent = messages[mi]; }, 1400);
+
+  try{
+    if(key){
+      result = await apiAnalyze(data);
+    } else {
+      await new Promise(r => setTimeout(r, 1600));
+      result = fallbackAnalyze(data);
+    }
+  } catch(err){
+    console.error('API analysis failed, using fallback:', err);
+    loadingText.textContent = 'API unavailable — switching to Demo Mode…';
+    await new Promise(r => setTimeout(r, 800));
+    result = fallbackAnalyze(data);
+  }
+
+  clearInterval(msgInterval);
+  loadingBox.classList.remove('show');
+  btn.disabled = false;
+
+  renderResults(data.name, result);
+  saveToHistory({
+    name: data.name,
+    profession: data.profession,
+    date: new Date().toLocaleDateString(),
+    result
+  });
+});
+</script>
+</body>
+</html>
